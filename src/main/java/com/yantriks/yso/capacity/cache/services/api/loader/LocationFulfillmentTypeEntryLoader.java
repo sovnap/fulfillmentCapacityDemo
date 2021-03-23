@@ -49,6 +49,7 @@ public class LocationFulfillmentTypeEntryLoader {
   }
 
   public Mono<LocationAndFulfillmentTypeDetail> doLoad(Mono<LocationAndFulfillmentTypeDetail> detail)  {
+    log.debug("before update locationAndFulfillmentTypeDetail : {}", detail.subscribe(System.out::println));
       return webClient
           .method(HttpMethod.PUT)
           .uri(locationFulfillmentTypeUrl + "/location-services/location-fulfillment-type")

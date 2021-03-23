@@ -39,46 +39,29 @@ public class FulfillmentTypeCapacityExtensionHandler  {
 
     log.debug("locationAndFulfillmentTypeDetail : {}", locationFTDetail.subscribe(System.out::println));
     locationFTDetail.subscribe(detail-> {
-      loader.doLoad(buildLocationFTDetailRequest(fulfillmentTypeCapacityDetail.getCapacity(), locationFTDetail));
-      log.debug("After update locationAndFulfillmentTypeDetail : {}", locationFTDetail.subscribe(System.out::println));
+      loader.doLoad(buildLocationFTDetailRequest(fulfillmentTypeCapacityDetail.getCapacity(), detail)).subscribe();
+      //log.debug("After update locationAndFulfillmentTypeDetail : {}", detail);
     });
-      /*if(Boolean.FALSE.equals(hasElement))
-        return loader.createLoad(Mono.just(LocationAndFulfillmentTypeDetail.builder()
-                  .orgId(locationFTKey.getOrgId())
-                  .sellingChannel(locationFTKey.getSellingChannel())
-                  .locationType(locationFTKey.getLocationType())
-                  .locationId(locationFTKey.getLocationId())
-                  .fulfillmentType(locationFTKey.getFulfillmentType())
-                  .enabled(false).build()));
-      else
 
-      return locationFTDetail;
-    }).subscribe();*/
+
         return handler.update(fulfillmentTypeCapacityDetail).doOnError(throwable -> {
       handler.create(fulfillmentTypeCapacityDetail);
     });
   }
 
   private Mono<LocationAndFulfillmentTypeDetail> buildLocationFTDetailRequest(Map<LocalDate, CapacityDetail> capacity,
-      Mono<LocationAndFulfillmentTypeDetail> locationFTDetail) {
-    if(capacity.containsKey(LocalDate.now()) && capacity.get(LocalDate.now()).getCapacity() ==0) {
-      locationFTDetail.flatMap(detail ->{
-        if(detail.getEnabled())
-          detail.setEnabled(false);
-        return Mono.just(detail);
-      });
-    }else if(capacity.containsKey(LocalDate.now()) && capacity.get(LocalDate.now()).getCapacity() >0){
-      locationFTDetail.flatMap(detail ->{
-        if(!detail.getEnabled())
-          detail.setEnabled(true);
-        return Mono.just(detail);
-      });
+      LocationAndFulfillmentTypeDetail detail) {
+    if(capacity.containsKey(LocalDate.now())) {
+      if (capacity.get(LocalDate.now()).getCapacity() > 0) {
+        detail.setEnabled(true);
+      } else if (capacity.get(LocalDate.now()).getCapacity() == 0) {
+        detail.setEnabled(false);
+      }
     }else{
-      locationFTDetail.flatMap(detail ->{
-        return Mono.just(detail);
-      });
+      detail.setEnabled(false);
     }
-    return locationFTDetail;
+
+    return Mono.just(detail);
   }
 
 }
