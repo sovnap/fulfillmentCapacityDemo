@@ -57,6 +57,6 @@ public class FulfillmentTypeCapacityExtensionController extends GenericControlle
   }
 
   protected String getMetricURI() {
-    return "/capacity-cache-services/fulfillment-type-capacity-extn";
+    return "/capacity-cache-services/extension/fulfillment-type-capacity";
   }
 }
