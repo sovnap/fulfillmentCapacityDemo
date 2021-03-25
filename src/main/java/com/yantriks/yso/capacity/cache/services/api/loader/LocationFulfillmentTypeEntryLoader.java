@@ -5,9 +5,11 @@ import com.yantriks.ypfp.common.api.exception.EntityDoesNotExistException;
 import com.yantriks.ypfp.ycs.location.services.core.dto.LocationAndFulfillmentTypeDetail;
 import com.yantriks.ypfp.ycs.location.services.core.dto.key.LocationAndFulfillmentTypeDetailKey;
 import lombok.extern.slf4j.Slf4j;
+import java.util.logging.Level;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.logging.LogLevel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.SignalType;
 
 @Slf4j
 @Component
@@ -38,8 +41,7 @@ public class LocationFulfillmentTypeEntryLoader {
   }
 
   public Mono<? extends LocationAndFulfillmentTypeDetail> createLoad(Mono<LocationAndFulfillmentTypeDetail> detail) {
-    log.debug("post call for locationAndFulfillmentTypeDetail : {}", detail.subscribe(System.out::println));
-    return webClient
+        return webClient
         .method(HttpMethod.POST)
         .uri(locationFulfillmentTypeUrl + "/location-services/location-fulfillment-type")
         .body(detail, LocationAndFulfillmentTypeDetail.class)
@@ -48,7 +50,6 @@ public class LocationFulfillmentTypeEntryLoader {
   }
 
   public Mono<LocationAndFulfillmentTypeDetail> doLoad(Mono<LocationAndFulfillmentTypeDetail> detail) {
-    log.debug("before update locationAndFulfillmentTypeDetail : {}", detail.subscribe(System.out::println));
 
     return webClient
         .method(HttpMethod.PUT)

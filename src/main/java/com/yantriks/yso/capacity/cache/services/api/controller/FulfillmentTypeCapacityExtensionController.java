@@ -43,12 +43,12 @@ public class FulfillmentTypeCapacityExtensionController extends GenericControlle
   @PutMapping
   @ResponseStatus(HttpStatus.OK)
   @Operation(summary = "Disable/Enable Location Fulfillment Type data as per Capacity Cache Data", description = CapacityCacheServices.FULFILLMENT_TYPE_CAPACITY_POST_API_NOTES)
-  public Mono<ResponseEntity<FulfillmentTypeCapacityDetailResponse>> create(
+  public Mono<ResponseEntity<FulfillmentTypeCapacityDetailResponse>> upsert(
       @Parameter(required = true) @Valid @RequestBody FulfillmentTypeCapacityDetailRequest request) {
 
     return handler.upsert(mapper.requestToDetail(request))
         .map(mapper::toResponse)
-        .transform(processGenericCreateResponse(request));
+        .transform(processGenericUpdateResponse(request));
 
   }
 

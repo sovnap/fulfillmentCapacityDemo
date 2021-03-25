@@ -33,10 +33,11 @@ public class FulfillmentTypeCapacityExtensionHandler {
 
     return (handler.update(fulfillmentTypeCapacityDetail)
         .onErrorResume(error -> {
-          if (!(error instanceof EntityDoesNotExistException)) {
-            log.debug("Received error : {}",error.getMessage());
+          if (error instanceof EntityDoesNotExistException) {
+            log.debug("Attempt to create data that do not exist",error.getMessage());
+            return handler.create(fulfillmentTypeCapacityDetail);
           }
-          return handler.create(fulfillmentTypeCapacityDetail);
+          return Mono.error(error);
         })).doOnSuccess(s->{
           updateLocationFT(fulfillmentTypeCapacityDetail);
         });
@@ -49,10 +50,8 @@ public class FulfillmentTypeCapacityExtensionHandler {
             .fulfillmentType(fulfillmentTypeCapacityDetail.getFulfillmentType()).build();
     Mono<LocationAndFulfillmentTypeDetail> locationFTDetail = loader.getLoad(locationFTKey);
 
-    //log.debug("locationAndFulfillmentTypeDetail : {}", locationFTDetail.log(log.getName()));
     locationFTDetail.subscribe(detail -> {
       loader.doLoad(buildLocationFTDetailRequest(fulfillmentTypeCapacityDetail.getCapacity(), detail)).subscribe();
-      //log.debug("After update locationAndFulfillmentTypeDetail : {}", detail);
     });
   }
 

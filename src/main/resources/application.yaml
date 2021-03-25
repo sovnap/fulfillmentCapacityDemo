@@ -122,7 +122,7 @@ ypfp:
   imdg:
     hazelcast:
       group.name: yso
-      port: 5703
+      port: 5704
       client:
         connection:
           attempt:
